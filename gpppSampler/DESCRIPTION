@@ -1,0 +1,45 @@
+Package: gpppSampler
+Type: Package
+Title: Gaussian Process Power Prior MCMC Sampler
+Version: 0.5.1
+Authors@R:
+    person("Claire", "Zhu", email = "clairesunzhu@gmail.com",
+           role = c("aut", "cre"))
+Description: Implements a partially-collapsed Metropolis-within-Gibbs sampler
+    for the Gaussian Process Power Prior (GPPP) model. For continuous and
+    time-to-event outcomes the noise precision tau is unknown and the
+    discount a0 acts on the complete historical likelihood (the full power
+    prior); kernel hyperparameters and a0 are updated collapsed (f*
+    marginalized out, with the tau-integrated normalizing constant evaluated
+    by fixed-node quadrature), while the latent GP vector f* is drawn jointly
+    each iteration to support a conjugate gamma update of tau. For binary
+    outcomes the model uses a logit link with Polya-Gamma augmentation: a0
+    discounts the true observed-data logistic likelihood (not the
+    complete-data augmented-latent likelihood, a different, non-equivalent
+    prior); kernel hyperparameters are updated collapsed over the latent GP
+    vector given the current Polya-Gamma weights, and a0 is updated
+    conditional on the latent vector using a Laplace-approximated
+    normalizing constant, since the augmentation gives exact latent draws
+    but not this normalizer. Time-to-event (log-normal AFT) outcomes are
+    handled via data augmentation of censored historical times
+    (Section 2.4); the discounted censoring-survival term has the same
+    normalizing-constant issue as the binary case and is not yet addressed.
+    Kernels include squared exponential, Matern 5/2, and
+    linear, all with ARD length-scales. Both fixed and random discounting
+    parameter a0 are supported. The profiled hot paths for the continuous/tte
+    (unknown-tau) case with a supported kernel -- kernel matrix construction,
+    collapsed marginal likelihood evaluation, and the a0 update's
+    tau-integrated quadrature -- are implemented in C++ via Rcpp and
+    RcppArmadillo; the binary-outcome path remains pure R. Statistical
+    derivations follow the working paper "Gaussian Process Power Prior"
+    (Zhu, 2026).
+License: MIT + file LICENSE
+Encoding: UTF-8
+Imports:
+    stats,
+    Rcpp
+LinkingTo:
+    Rcpp,
+    RcppArmadillo
+SystemRequirements: C++14
+RoxygenNote: 7.3.2
